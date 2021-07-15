@@ -1,0 +1,14 @@
+<div class="text-center" *ngIf="dataService.hasStock">
+  <button type="button" (click)="visible = true" mat-button>Change input</button>
+</div>
+<ng-container *ngIf="visible" [formGroup]="fg">
+  <div>
+    <mat-form-field class="w-100">
+      <mat-label>Addon input</mat-label>
+      <textarea rows="40" formControlName="value" matInput style="resize: none;font-size: 10px;white-space: pre;font-family: monospace"></textarea>
+    </mat-form-field>
+  </div>
+  <div>
+    <button type="button" (click)="onSave()" mat-button color="primary" [disabled]="fg.invalid">Save</button>
+  </div>
+</ng-container>
