@@ -141,13 +141,15 @@ export class Vendor implements ItemInterface {
 }
 
 export class Craft implements ItemInterface {
-  private readonly crafts: { quantity: number, item: Item }[];
+  private readonly crafts: { quantity: number, item: Item | Vendor | Craft }[];
 
-  constructor(private itemId: ItemId, ...crafts: { quantity: number, item: Item }[]) {
+  constructor(private itemId: ItemId, ...crafts: { quantity: number, item: Item | Vendor | Craft }[]) {
     this.crafts = crafts;
   }
 
   get id() { return this.itemId; }
+
+  get crafting() { return Object.freeze(this.crafts); }
 
   duplicate(): Craft {
     const newCrafts = [...this.crafts].map(a => ({ quantity: a.quantity, item: a.item.duplicate() }))
@@ -160,7 +162,7 @@ export class Craft implements ItemInterface {
       .reduce((prev, cur) => Math.min(prev, cur), Number.MAX_SAFE_INTEGER);
   }
 
-  average(topPercentage: number): number | null {
+  average(topPercentage: number = 0.25): number | null {
     const grabQuantity = Math.floor(this.quantity() * topPercentage);
     const peekQuantity = this.peek(grabQuantity);
     if (peekQuantity === null) { return null; }

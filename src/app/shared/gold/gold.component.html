@@ -1,0 +1,6 @@
+<ng-container *ngIf="gold else unknownRef">
+  <span class="gold" [class.loss]="isLoss">{{displayGold | number:'2.0-0'}}</span>
+  <span class="silver">{{displaySilver | number:'2.0-0'}}</span>
+  <span class="copper">{{displayCopper | number:'2.0-0'}}</span>
+</ng-container>
+<ng-template #unknownRef>N/A</ng-template>

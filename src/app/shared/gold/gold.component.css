@@ -1,0 +1,26 @@
+.gold {
+    color: #DDB100;
+}
+.gold.loss {
+    color: #dd0000;
+}
+
+.gold::after {
+    content: "g ";
+}
+
+.silver {
+    color: #888;
+}
+
+.silver::after {
+    content: "s ";
+}
+
+.copper {
+    color: #b56c41;
+}
+
+.copper::after {
+    content: "c ";
+}

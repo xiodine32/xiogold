@@ -1,1 +1,72 @@
-<p>statistics works!</p>
+<div class="d-flex">
+  <div class="flex-25">
+    <h2>Auction House</h2>
+    <ng-container *ngIf="stock$ | async as stock else noStockRef">
+      <mat-list>
+        <mat-list-item *ngFor="let kv of stock | keyvalue; trackBy: trackByItemId">
+          <h3 matLine>{{kv.value.name()}}</h3>
+          <p matLine>min:
+            <app-gold [gold]="kv.value.minimum()"></app-gold>
+          </p>
+          <p matLine>avg 25%:
+            <app-gold [gold]="kv.value.average()"></app-gold>
+            (available: {{kv.value.quantity()}})
+          </p>
+        </mat-list-item>
+      </mat-list>
+    </ng-container>
+  </div>
+  <div class="flex-25">
+    <h2>Auction House Crafting</h2>
+    <ng-container *ngIf="craft$ | async as craft else noCraftRef">
+      <mat-list>
+        <mat-list-item *ngFor="let kv of craft | keyvalue; trackBy: trackByCraftId" [matTooltip]="kv.value | craftRecipe"
+                       matTooltipPosition="left">
+          <h3 matLine>{{kv.value.name()}}</h3>
+          <p matLine>min:
+            <app-gold [gold]="kv.value.minimum()"></app-gold>
+          </p>
+          <p matLine>avg 25%:
+            <app-gold [gold]="kv.value.average()"></app-gold>
+            (available: {{kv.value.quantity()}})
+          </p>
+        </mat-list-item>
+      </mat-list>
+    </ng-container>
+  </div>
+  <div class="flex-25">
+    <h2>Vendor</h2>
+    <ng-container *ngIf="vendor$ | async as vendor else noCraftRef">
+      <mat-list>
+        <mat-list-item *ngFor="let kv of vendor | keyvalue; trackBy: trackByVendorId">
+          <h3 matLine>{{kv.value.name()}}</h3>
+          <p matLine>cost:
+            <app-gold [gold]="kv.value.minimum()"></app-gold>
+          </p>
+        </mat-list-item>
+      </mat-list>
+    </ng-container>
+  </div>
+  <div class="flex-25">
+    <h2>Differences</h2>
+    <ng-container *ngIf="snapshotProfits$ | async as snapshotProfits else noCraftRef">
+      <mat-list>
+        <mat-list-item *ngFor="let kv of snapshotProfits | keyvalue | sortedByDelta; trackBy: trackByCraftItemDeltaId">
+          <h3 matLine>{{kv.value.item.name()}} - <app-gold [gold]="kv.value.delta"></app-gold></h3>
+          <p matLine>
+            AH:
+            <app-gold [gold]="kv.value.itemBuyout"></app-gold>
+            Craft & Cut:
+            <app-gold [gold]="kv.value.craftWithCut"></app-gold>
+          </p>
+        </mat-list-item>
+      </mat-list>
+    </ng-container>
+  </div>
+</div>
+<ng-template #noStockRef>
+  There is no stock!
+</ng-template>
+<ng-template #noCraftRef>
+  There are no crafting recipes!
+</ng-template>
