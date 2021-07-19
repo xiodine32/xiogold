@@ -16,13 +16,18 @@ local function DoScanAuction()
     local itemKey = C_AuctionHouse.MakeItemKey(head)
 
     _, sName = GetItemInfo(head)
-    print(format('> %s %d/%d', sName, #searchList, #toSearch))
+    if not sName then
+        table.insert(searchList, 1, head)
+        return
+    end
+    print(format('> %d/%d %s', #searchList, #toSearch, sName))
     C_AuctionHouse.SendSearchQuery(itemKey, {}, false)
 end
 
 local function ScanAuctions()
     if not handler then
         print("searching alchemy")
+        wipe(private.items)
         handler = C_Timer.NewTicker(1, DoScanAuction)
         toSearch = { 171276,180457,171287,171288,171289,171290,171291,171428,171292,171285,171286,169701,171315,168586,168589,168583,170554,171278,171270,171273,171274,171275,171351,171352,171350,171349,176811,171271,171272,184090,171370,171263,183823,171264,171266,171301,171269,171267,171268 }
         searchList  = { 171276,180457,171287,171288,171289,171290,171291,171428,171292,171285,171286,169701,171315,168586,168589,168583,170554,171278,171270,171273,171274,171275,171351,171352,171350,171349,176811,171271,171272,184090,171370,171263,183823,171264,171266,171301,171269,171267,171268 }
@@ -71,10 +76,10 @@ function XioAuctions_Show()
 end
 
 function XioAuctions_Run()
+    if ScanAuctions() then
+        return
+    end
 	if not XioAuctionsFrame then
-	    if ScanAuctions() then
-	        return
-        end
 		print('XioAuctions - dialog')
 		local f = CreateFrame("Frame", "XioAuctionsFrame", UIParent, "DialogBoxFrame")
 		f:SetSize(400, 300)
@@ -123,6 +128,9 @@ function XioAuctions_OnEvent(self, event, ...)
 	elseif event == "AUCTION_HOUSE_CLOSED" then
 		-- nothing
 	elseif event == "COMMODITY_SEARCH_RESULTS_UPDATED" then
+	    if not handler then
+	        return
+	    end
 		local itemId = ...
 		private.items[itemId] = ""
 		for i = 1, C_AuctionHouse.GetNumCommoditySearchResults(itemId) do
