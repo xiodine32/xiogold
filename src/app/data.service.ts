@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import recipes from './data/recipes';
+import sellPrices from './data/sellPrices';
 import vendors from './data/vendors';
 import { Craft, Item, ItemId, Vendor } from './item.class';
 
@@ -119,6 +120,7 @@ export class DataService {
   private snapshotProfits() {
     return combineLatest([this.stock$, this.craft$]).pipe(
       map(([stock, craft]) => {
+        const sellPriceMap: {[id: string]: number} = sellPrices;
         const profitMap = new Map<ItemId, CraftItemDelta>();
         const stockIds = new Set([...stock.keys()]);
         const craftIds = new Set([...craft.keys()]);
@@ -134,12 +136,13 @@ export class DataService {
           const itemBuyout = ahItem.peek(1);
           const craftNoCut = craftedItem.peek(1);
           if (itemBuyout === null || craftNoCut === null) { continue; }
+          const craftWithCut = craftNoCut * 1.05 + (sellPriceMap[`${ahItem.id}`] || 0) * 0.3;
           profitMap.set(intersection, {
             craft: craftedItem,
             item: ahItem,
-            craftWithCut: craftNoCut * 0.95,
+            craftWithCut: craftWithCut,
             itemBuyout: itemBuyout,
-            delta: itemBuyout - (craftNoCut * 0.95)
+            delta: itemBuyout - craftWithCut
           });
         }
         return profitMap;
