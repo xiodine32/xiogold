@@ -180,7 +180,7 @@ export class DataService {
         }
         const newCraft = new Map<ItemId, Craft>();
         for (const [key, value] of craft.entries()) {
-          newCraft.set(key, value.duplicate());
+          newCraft.set(key, value.duplicate(newStock, this._vendor$.value));
         }
         let originalGold = goldCalc + 1;
         while (originalGold > goldCalc) {

@@ -16,8 +16,6 @@ interface ItemInterface {
   average(topPercentage: number): null | number;
 
   quantity(): number;
-
-  duplicate(): ItemInterface;
 }
 
 export class Item implements ItemInterface {
@@ -59,7 +57,7 @@ export class Item implements ItemInterface {
       this.stock[0].quantity -= removeQuantity;
       removeQuantity -= quantity;
       if (this.stock[0].quantity < 0) {
-        this.stock.pop();
+        this.stock.shift();
       }
     }
   }
@@ -151,8 +149,14 @@ export class Craft implements ItemInterface {
 
   get crafting() { return Object.freeze(this.crafts); }
 
-  duplicate(): Craft {
-    const newCrafts = [...this.crafts].map(a => ({ quantity: a.quantity, item: a.item.duplicate() }))
+  duplicate(stock: Map<ItemId, Item>, vendor: Map<ItemId, Vendor>): Craft {
+    const newCrafts = [...this.crafts].map(a => {
+      const item = (stock.get(a.item.id) ?? vendor.get(a.item.id)) as Item | Vendor | Craft;
+      if (!item) {
+        console.error('error duplicating', item, a.item);
+      }
+      return ({ quantity: a.quantity, item });
+    })
     return new Craft(this.itemId, ...newCrafts);
   }
 
