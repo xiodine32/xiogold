@@ -1,6 +1,36 @@
 local _, xa = ...
 local private = { items = {}, latest = {} }
 local XioAuctionsFrame = nil
+local toSearch = {}
+local searchList = nil
+local handler = nil
+
+local function DoScanAuction()
+    if next(searchList) == nil then
+        XioAuctions_Run()
+        handler:Cancel()
+        handler = nil
+        return
+    end
+    head = table.remove(searchList, 1)
+    local itemKey = C_AuctionHouse.MakeItemKey(head)
+
+    _, sName = GetItemInfo(head)
+    print(format('> %s %d/%d', sName, #searchList, #toSearch))
+    C_AuctionHouse.SendSearchQuery(itemKey, {}, false)
+end
+
+local function ScanAuctions()
+    if not handler then
+        print("searching alchemy")
+        handler = C_Timer.NewTicker(1, DoScanAuction)
+        toSearch = { 171276,180457,171287,171288,171289,171290,171291,171428,171292,171285,171286,169701,171315,168586,168589,168583,170554,171278,171270,171273,171274,171275,171351,171352,171350,171349,176811,171271,171272,184090,171370,171263,183823,171264,171266,171301,171269,171267,171268 }
+        searchList  = { 171276,180457,171287,171288,171289,171290,171291,171428,171292,171285,171286,169701,171315,168586,168589,168583,170554,171278,171270,171273,171274,171275,171351,171352,171350,171349,176811,171271,171272,184090,171370,171263,183823,171264,171266,171301,171269,171267,171268 }
+        return true
+    end
+    return false
+end
+
 function XioAuctions_Gold(value)
 	if value < 0 then
 		return '-' .. GetCoinTextureString(-value)
@@ -31,7 +61,7 @@ function XioAuctions_Show()
 		tab:SetID(tabId)
 		tab:SetText("XioAuctions")
 		tab:SetNormalFontObject(GameFontHighlightSmall)
-		tab:SetPoint("LEFT", AuctionHouseFrame.Tabs[tabId - 1], "RIGHT", -15, 0)
+		tab:SetPoint("LEFT", AuctionHouseFrame.Tabs[tabId - 1], "RIGHT", 0, 30)
 		tinsert(AuctionHouseFrame.Tabs, tab)
 		tab:Show()
 		PanelTemplates_SetNumTabs(AuctionHouseFrame, tabId)
@@ -42,6 +72,9 @@ end
 
 function XioAuctions_Run()
 	if not XioAuctionsFrame then
+	    if ScanAuctions() then
+	        return
+        end
 		print('XioAuctions - dialog')
 		local f = CreateFrame("Frame", "XioAuctionsFrame", UIParent, "DialogBoxFrame")
 		f:SetSize(400, 300)
@@ -101,7 +134,7 @@ function XioAuctions_OnEvent(self, event, ...)
     	end
 		_, sName = GetItemInfo(itemId)
 		newValue = private.latest[itemId]
-        print('Added', sName, XioAuctions_Gold(newValue))
+        print('>>>', sName, XioAuctions_Gold(newValue))
     elseif event == "ITEM_SEARCH_RESULTS_UPDATED" then
 	    -- nothing
 	else
