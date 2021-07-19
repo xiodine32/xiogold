@@ -1,1 +1,37 @@
-<p>shuffle works!</p>
+<br>
+<app-shuffle-input (queryChange)="onQueryChange($event)"></app-shuffle-input>
+<div class="d-flex justify-content-center">
+  <div class="flex-25">
+    <h2>Buy</h2>
+    <mat-list>
+      <mat-list-item *ngFor="let kv of regents | keyvalue; trackBy: trackByRegentId">
+        <h3 matLine>{{kv.value.quantity}}x {{kv.key | itemName}}</h3>
+        <p matLine><app-gold [gold]="kv.value.totalCost"></app-gold></p>
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <div class="flex-25">
+    <h2>Craft</h2>
+    <ng-container *ngIf="profits$ | async as profits">
+      <mat-list>
+        <mat-list-item *ngFor="let kv of profits | keyvalue; trackBy: trackByProfitsId">
+          <h3 matLine>{{kv.value.quantity}}x {{kv.key | itemName}} -
+            <app-gold [gold]="kv.value.totalPost - kv.value.totalCost"></app-gold>
+          </h3>
+          <p matLine>
+            AH:
+            <app-gold [gold]="kv.value.totalPost"></app-gold>
+            Craft & Cut:
+            <app-gold [gold]="kv.value.totalCost"></app-gold>
+          </p>
+        </mat-list-item>
+      </mat-list>
+    </ng-container>
+  </div>
+  <div class="flex-25">
+    <h2>Summary</h2>
+    <h3>Total Profit: <app-gold [gold]="totalProfit - totalCost"></app-gold></h3>
+    <h3>Total Revenue: <app-gold [gold]="totalProfit"></app-gold></h3>
+    <h3>Total Cost: <app-gold [gold]="totalCost"></app-gold></h3>
+  </div>
+</div>

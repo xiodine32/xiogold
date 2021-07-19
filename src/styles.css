@@ -22,3 +22,6 @@ body {
 .flex-25 {
     flex: 0 0 25%;
 }
+.justify-content-center {
+    justify-content: center;
+}

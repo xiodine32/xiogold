@@ -1,0 +1,15 @@
+<div class="text-center" [formGroup]="fg">
+  <mat-form-field>
+    <mat-label>Gold to spend</mat-label>
+    <input type="number" step="1000" min="1000" formControlName="gold" matInput autocomplete="off">
+    <span matSuffix>g</span>
+  </mat-form-field>
+  <br>
+  <mat-form-field>
+    <mat-label>Max stack quantity</mat-label>
+    <input type="number" step="1" min="1" formControlName="maxQuantity" matInput autocomplete="off">
+    <span matSuffix>i</span>
+  </mat-form-field>
+  <br>
+  <button mat-button (click)="onCalculate()" color="primary" [disabled]="fg.invalid">Calculate</button>
+</div>

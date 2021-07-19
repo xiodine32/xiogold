@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { GoldPipe } from './gold/gold.pipe';
 import { CraftRecipePipe } from './craft-recipe/craft-recipe.pipe';
 import { GoldComponent } from './gold/gold.component';
+import { ItemNamePipe } from './item-name/item-name.pipe';
 
 
 
@@ -10,12 +11,14 @@ import { GoldComponent } from './gold/gold.component';
   declarations: [
     GoldPipe,
     CraftRecipePipe,
-    GoldComponent
+    GoldComponent,
+    ItemNamePipe
   ],
   exports: [
     GoldPipe,
     CraftRecipePipe,
-    GoldComponent
+    GoldComponent,
+    ItemNamePipe
   ],
   imports: [
     CommonModule

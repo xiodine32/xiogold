@@ -18,6 +18,7 @@ import { SharedModule } from './shared/shared.module';
 import { ShuffleComponent } from './shuffle/shuffle.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { SortedByDeltaPipe } from './statistics/sorted-by-delta.pipe';
+import { ShuffleInputComponent } from './shuffle/shuffle-input/shuffle-input.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { SortedByDeltaPipe } from './statistics/sorted-by-delta.pipe';
     NavigationComponent,
     StatisticsComponent,
     ShuffleComponent,
-    SortedByDeltaPipe
+    SortedByDeltaPipe,
+    ShuffleInputComponent
   ],
   imports: [
     BrowserModule,
