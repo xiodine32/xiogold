@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import ignoredItems from './data/ignoredItems';
@@ -32,7 +31,7 @@ export class DataService {
   profits$: Observable<Map<ItemId, CraftProfit>>;
   private _profitsQuery$ = new ReplaySubject<{ gold: number; maxQuantity: number }>(1);
 
-  constructor(private matSnackBar: MatSnackBar) {
+  constructor() {
     this.snapshotProfits$ = this.snapshotProfits();
     this.profits$ = this.calculateProfits();
   }
@@ -154,8 +153,6 @@ export class DataService {
       doImport(retryEntries);
       if (unknownEntries.length) {
         console.warn('unknownEntries', unknownEntries);
-        const message = 'There are ' + unknownEntries.length + ' unknown entries, look at console log!';
-        this.matSnackBar.open(message, 'Ok', { duration: 2000 });
       }
     }
     this._craft$.next(recipesMap);
