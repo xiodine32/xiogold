@@ -11,9 +11,9 @@ import { ProfitQuery } from '../../data.service';
 export class ShuffleInputComponent implements OnInit {
 
   fg = new FormGroup({
-    gold: new FormControl(1000, [Validators.required, Validators.min(1000), Validators.pattern(/^\d+$/)]),
+    gold: new FormControl(2000, [Validators.required, Validators.min(1000), Validators.pattern(/^\d+$/)]),
     maxQuantity: new FormControl(20, [Validators.required, Validators.min(1), Validators.pattern(/^\d+$/)]),
-    minSaleRate: new FormControl(30, [Validators.required, Validators.min(1), Validators.pattern(/^\d{1,3}$/)])
+    minSaleRate: new FormControl(15, [Validators.required, Validators.min(1), Validators.pattern(/^\d{1,3}$/)])
   })
 
   @Output() queryChange = new EventEmitter<ProfitQuery>();

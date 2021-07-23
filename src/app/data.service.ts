@@ -190,7 +190,7 @@ export class DataService {
         while (originalGold > goldCalc) {
           originalGold = goldCalc;
           const profits = [...DataService.calculateProfitMap(newStock, newCraft).values()];
-          profits.sort((a, b) => b.delta - a.delta);
+          profits.sort((a, b) => (b.delta / b.craftWithCut) - (a.delta / a.craftWithCut));
           const shouldRemoveId = (itemId: number) => {
             if (profits.length === 0 || profits[0].delta <= 0) { return false; }
             if (ignoredItemsArray.includes(itemId)) { return true; }
