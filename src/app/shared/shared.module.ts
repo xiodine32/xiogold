@@ -4,6 +4,7 @@ import { GoldPipe } from './gold/gold.pipe';
 import { CraftRecipePipe } from './craft-recipe/craft-recipe.pipe';
 import { GoldComponent } from './gold/gold.component';
 import { ItemNamePipe } from './item-name/item-name.pipe';
+import { SellRatePipe } from './sell-rate/sell-rate.pipe';
 
 
 
@@ -12,13 +13,15 @@ import { ItemNamePipe } from './item-name/item-name.pipe';
     GoldPipe,
     CraftRecipePipe,
     GoldComponent,
-    ItemNamePipe
+    ItemNamePipe,
+    SellRatePipe
   ],
   exports: [
     GoldPipe,
     CraftRecipePipe,
     GoldComponent,
-    ItemNamePipe
+    ItemNamePipe,
+    SellRatePipe
   ],
   imports: [
     CommonModule

@@ -15,8 +15,10 @@
     <ng-container *ngIf="profits$ | async as profits">
       <mat-list>
         <mat-list-item *ngFor="let kv of profits | keyvalue; trackBy: trackByProfitsId">
-          <h3 matLine>{{kv.value.quantity}}x {{kv.key | itemName}} -
+          <h3 matLine>
+            {{kv.value.quantity}}x {{kv.key | itemName}} -
             <app-gold [gold]="kv.value.totalPost - kv.value.totalCost"></app-gold>
+            <small>({{kv.key | sellRate}})</small>
           </h3>
           <p matLine>
             AH:

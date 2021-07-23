@@ -103,7 +103,39 @@ function writeToFileJson(filePath, object) {
     });
 }
 
+function getData() {
+    return new Promise((resolve, reject) => {
+        fs.readFile('/Applications/World of Warcraft/_retail_/Interface/Addons/TradeSkillMaster_AppHelper/AppData.lua', 'utf8', function (err, data) {
+            if (err) {
+                reject(err);
+            }
+            resolve(data);
+        });
+    });
+}
+
+async function getSaleRates() {
+    const data = await getData();
+    let dataEU = data.split('\n')[1];
+    dataEU = dataEU.substr(dataEU.indexOf(',data={{'));
+    const matchArrays = [...dataEU.matchAll(/{+?(.+?),(.+?),(.+?),(.+?),(.+?),(.+?)}+?/g)];
+    return matchArrays.map(([_, id, marketValue, historical, sale, soldperday, percent]) => ({id: id, percent: +`0.${percent}`}));
+}
+
 async function main() {
+    const rates = await getSaleRates();
+    async function writeSaleRates() {
+        const saleRates = {};
+        for (const itemId of itemIds) {
+            const percent = rates.find(a => a.id === `${itemId}`)?.percent;
+            if (percent) {
+                saleRates[itemId] = percent;
+            }
+        }
+        await writeToFileJson(path.join(__dirname, 'src', 'app', 'data', 'sellRate.ts'), saleRates);
+    }
+    await writeSaleRates();
+
     const infos = await getInfos();
 
     async function writeItemMap() {
