@@ -1,4 +1,4 @@
-// Generated at: 2021-07-23T07:54:41.395Z
+// Generated at: 2021-07-23T10:46:48.302Z
 export default {
   "168583": "Widowbloom",
   "168586": "Rising Glory",

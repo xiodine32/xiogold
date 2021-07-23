@@ -4,6 +4,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import ignoredItems from './data/ignoredItems';
 import recipes from './data/recipes';
 import sellPrices from './data/sellPrices';
+import sellRate from './data/sellRate';
 import vendors from './data/vendors';
 import { Craft, Item, ItemId, Vendor } from './item.class';
 
@@ -22,6 +23,12 @@ export interface CraftProfit {
   regents: Map<ItemId, { quantity: number, totalCost: number }>;
 }
 
+export interface ProfitQuery {
+  gold: number;
+  maxQuantity: number;
+  minSaleRate: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,7 +36,7 @@ export class DataService {
 
   snapshotProfits$: Observable<Map<ItemId, CraftItemDelta>>;
   profits$: Observable<Map<ItemId, CraftProfit>>;
-  private _profitsQuery$ = new ReplaySubject<{ gold: number; maxQuantity: number }>(1);
+  private _profitsQuery$ = new ReplaySubject<ProfitQuery>(1);
 
   constructor() {
     this.snapshotProfits$ = this.snapshotProfits();
@@ -85,8 +92,8 @@ export class DataService {
     this.importRecipes();
   }
 
-  getProfits(gold: number, maxQuantity: number) {
-    this._profitsQuery$.next({ gold: gold * 10000, maxQuantity });
+  getProfits(query: ProfitQuery) {
+    this._profitsQuery$.next(query);
   }
 
   private importStock(value: string) {
@@ -167,7 +174,7 @@ export class DataService {
 
   private calculateProfits() {
     return combineLatest([this.stock$, this.craft$, this._profitsQuery$]).pipe(
-      map(([stock, craft, { gold: goldCalc, maxQuantity }]) => {
+      map(([stock, craft, { gold: goldCalc, maxQuantity, minSaleRate }]) => {
         const newProfitMap = new Map<ItemId, CraftProfit>();
         const ignoredItemsArray = ignoredItems;
         // calculate best match
@@ -187,9 +194,10 @@ export class DataService {
           const shouldRemoveId = (itemId: number) => {
             if (profits.length === 0 || profits[0].delta <= 0) { return false; }
             if (ignoredItemsArray.includes(itemId)) { return true; }
-            return newProfitMap.has(itemId)
-              ? (newProfitMap.get(itemId) as CraftProfit).quantity >= maxQuantity
-              : false;
+            if (newProfitMap.has(itemId) && (newProfitMap.get(itemId) as CraftProfit).quantity >= maxQuantity) { return true; }
+            // noinspection RedundantIfStatementJS
+            if (((sellRate as {[key: string]: number})[`${itemId}`] ?? 0) < minSaleRate) { return true; }
+            return false;
           };
           while (shouldRemoveId(profits[0].item.id)) {
             profits.shift();

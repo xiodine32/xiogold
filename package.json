@@ -7,7 +7,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "predeploy": "ng build --output-path docs --base-href /xiogold/ && cp docs/index.html docs/404.html"
+    "predeploy": "ng build --output-path docs --base-href /xiogold/ && cp docs/index.html docs/404.html && git add -A"
   },
   "private": true,
   "dependencies": {

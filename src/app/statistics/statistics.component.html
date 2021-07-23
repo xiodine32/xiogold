@@ -4,7 +4,10 @@
     <ng-container *ngIf="stock$ | async as stock else noStockRef">
       <mat-list>
         <mat-list-item *ngFor="let kv of stock | keyvalue; trackBy: trackByItemId">
-          <h3 matLine>{{kv.value.name()}} <small>({{kv.value.id | sellRate}})</small></h3>
+          <h3 matLine>
+            {{kv.value.name()}}
+            <app-sell-rate [sellRate]="kv.value.id | sellRate"></app-sell-rate>
+          </h3>
           <p matLine>min:
             <app-gold [gold]="kv.value.minimum()"></app-gold>
           </p>
@@ -22,7 +25,10 @@
       <mat-list>
         <mat-list-item *ngFor="let kv of craft | keyvalue; trackBy: trackByCraftId" [matTooltip]="kv.value | craftRecipe"
                        matTooltipPosition="left">
-          <h3 matLine>{{kv.value.name()}} <small>({{kv.value.id | sellRate}})</small></h3>
+          <h3 matLine>
+            {{kv.value.name()}}
+            <app-sell-rate [sellRate]="kv.value.id | sellRate"></app-sell-rate>
+          </h3>
           <p matLine>min:
             <app-gold [gold]="kv.value.minimum()"></app-gold>
           </p>
@@ -55,7 +61,7 @@
           <h3 matLine>
             {{kv.value.item.name()}} -
             <app-gold [gold]="kv.value.delta"></app-gold>
-            <small>({{kv.value.item.id | sellRate}})</small>
+            <app-sell-rate [sellRate]="kv.value.item.id | sellRate"></app-sell-rate>
           </h3>
           <p matLine>
             AH:

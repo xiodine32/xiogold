@@ -11,5 +11,11 @@
     <span matSuffix>i</span>
   </mat-form-field>
   <br>
+  <mat-form-field>
+    <mat-label>Min sale rate</mat-label>
+    <input type="number" step="1" min="1" max="100" formControlName="minSaleRate" matInput autocomplete="off">
+    <span matSuffix>%</span>
+  </mat-form-field>
+  <br>
   <button mat-button (click)="onCalculate()" color="primary" [disabled]="fg.invalid">Calculate</button>
 </div>

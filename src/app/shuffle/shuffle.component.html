@@ -18,7 +18,7 @@
           <h3 matLine>
             {{kv.value.quantity}}x {{kv.key | itemName}} -
             <app-gold [gold]="kv.value.totalPost - kv.value.totalCost"></app-gold>
-            <small>({{kv.key | sellRate}})</small>
+            <app-sell-rate [sellRate]="kv.key | sellRate"></app-sell-rate>
           </h3>
           <p matLine>
             AH:

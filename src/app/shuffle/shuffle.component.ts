@@ -2,7 +2,7 @@ import { KeyValue } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { CraftProfit, DataService } from '../data.service';
+import { CraftProfit, DataService, ProfitQuery } from '../data.service';
 import { ItemId } from '../item.class';
 
 @Component({
@@ -45,7 +45,7 @@ export class ShuffleComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onQueryChange({ gold, maxQuantity }: { gold: number, maxQuantity: number }): void {
-    this.dataService.getProfits(gold, maxQuantity);
+  onQueryChange(query: ProfitQuery): void {
+    this.dataService.getProfits(query);
   }
 }
