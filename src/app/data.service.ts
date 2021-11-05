@@ -5,6 +5,7 @@ import ignoredItems from './data/ignoredItems';
 import recipes from './data/recipes';
 import sellPrices from './data/sellPrices';
 import sellRate from './data/sellRate';
+import topWhitelist from './data/topWhitelist';
 import vendors from './data/vendors';
 import { Craft, Item, ItemId, Vendor } from './item.class';
 
@@ -27,6 +28,7 @@ export interface ProfitQuery {
   gold: number;
   maxQuantity: number;
   minSaleRate: number;
+  whitelist: '' | 'top';
 }
 
 @Injectable({
@@ -174,9 +176,13 @@ export class DataService {
 
   private calculateProfits() {
     return combineLatest([this.stock$, this.craft$, this._profitsQuery$]).pipe(
-      map(([stock, craft, { gold: goldCalc, maxQuantity, minSaleRate }]) => {
+      map(([stock, craft, { gold: goldCalc, maxQuantity, minSaleRate, whitelist }]) => {
         const newProfitMap = new Map<ItemId, CraftProfit>();
         const ignoredItemsArray = ignoredItems;
+        let whitelistItemsArray: null | number[] = null;
+        if (whitelist === 'top') {
+          whitelistItemsArray = [...topWhitelist];
+        }
         // calculate best match
         const newStock = new Map<ItemId, Item>();
         for (const [key, value] of stock.entries()) {
@@ -194,6 +200,7 @@ export class DataService {
           const shouldRemoveId = (itemId: number) => {
             if (profits.length === 0 || profits[0].delta <= 0) { return false; }
             if (ignoredItemsArray.includes(itemId)) { return true; }
+            if (whitelistItemsArray !== null && !whitelistItemsArray.includes(itemId)) { return true; }
             if (newProfitMap.has(itemId) && (newProfitMap.get(itemId) as CraftProfit).quantity >= maxQuantity) { return true; }
             // noinspection RedundantIfStatementJS
             if (((sellRate as {[key: string]: number})[`${itemId}`] ?? 0) < minSaleRate) { return true; }
